@@ -17,14 +17,16 @@ import sys
 # IPython to load a module with missing binary files. This *must* happend before
 # importing RichJupyterWidget
 # In the case of pyqt5, we have to avoid patch the binding detection too.
-import qtconsole.qt_loaders
-original_has_binding = qtconsole.qt_loaders.has_binding
-def hooked_has_bindings(arg):
-    if arg == 'pyqt5':
-        return True
-    else:
-        return original_has_binding(arg)
-qtconsole.qt_loaders.has_binding = hooked_has_bindings
+
+# import qtconsole.qt_loaders
+# original_has_binding = qtconsole.qt_loaders.has_binding
+# def hooked_has_bindings(arg):
+#     if arg == 'pyqt5':
+#         return True
+#     else:
+#         return original_has_binding(arg)
+# qtconsole.qt_loaders.has_binding = hooked_has_bindings
+
 import PySide2
 PySide2.QtSvg = None
 PySide2.QtPrintSupport = type("EmptyQtPrintSupport", (), {})
