@@ -49,7 +49,6 @@ class CutterRichJupyterWidget(RichJupyterWidget):
         # Our solution here was to copy the original _is_complete and call the
         # kernel's do_one_iteration before expecting a reply. Original implemetation is in:
         # https://github.com/jupyter/qtconsole/blob/4.3.1/qtconsole/frontend_widget.py#L260
-        print ("\n======= " + "2"*15)
 
         try:
             from queue import Empty
@@ -144,6 +143,7 @@ class IPythonConsole(cutter.CutterDockWidget):
 
         self.ipython_widget.kernel_manager = self.kernel_manager
         self.ipython_widget.kernel_client = self.kernel_client
+        self.ipython_widget.setWindowTitle("iPython Widget")
         layout.addWidget(self.ipython_widget)
 
         return layout
