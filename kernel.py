@@ -14,7 +14,7 @@ from ipykernel.kernelapp import IPKernelApp
 import IPython.utils.frame
 import ipykernel.iostream
 
-_ida_ipython_qtimer = None
+_cutter_ipython_qtimer = None
 import sys
 import os 
 
@@ -61,13 +61,13 @@ def wrap_excepthook(ipython_excepthook):
 class IPythonKernel(object):
     def __init__(self):
         print ("[3] inside IPythonKernel init")
-        self._ida_ipython_qtimer = None
+        self._cutter_ipython_qtimer = None
         self.connection_file = None
     
     def start(self):
         print ("[4] inside IPythonKernel start")
 
-        if self._ida_ipython_qtimer is not None:
+        if self._cutter_ipython_qtimer is not None:
             raise Exception("IPython kernel is already running.")
 
         # The IPKernelApp initialization is based on the IPython source for
@@ -119,19 +119,19 @@ class IPythonKernel(object):
         # There's a second purpose: If there is no more reference to the QTimer,
         # it will get garbage collected and the timer will stop calling
         # kernel.do_one_iteration. Keep this in mind before removing this line.
-        self._ida_ipython_qtimer = qtimer
+        self._cutter_ipython_qtimer = qtimer
 
     def stop(self):
-        if self._ida_ipython_qtimer is not None:
-            self._ida_ipython_qtimer.stop()
-        self._ida_ipython_qtimer = None
+        if self._cutter_ipython_qtimer is not None:
+            self._cutter_ipython_qtimer.stop()
+        self._cutter_ipython_qtimer = None
         self.connection_file = None
         sys.stdout = _cutter_stdout
         sys.stderr = _cutter_stderr
 
     @property
     def started(self):
-        return self._ida_ipython_qtimer is not None
+        return self._cutter_ipython_qtimer is not None
 
 def do_one_iteration():
     print ("\n=====" +"D"*15)
