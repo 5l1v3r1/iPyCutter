@@ -37,8 +37,9 @@ class InitializeIPyCutter(cutter.CutterPlugin):
             action.setCheckable(True)
 
             self.widget = cutter_qtconsole.IPythonConsole(self.kernel.connection_file, main, action)
-            main.addPluginDockWidget(self.widget, action)
             self.widget.create()
+            main.addPluginDockWidget(self.widget, action)
+        self.widget.show()
     
         
 
