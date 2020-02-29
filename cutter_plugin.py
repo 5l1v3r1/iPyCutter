@@ -22,6 +22,7 @@ class InitializeIPyCutter(cutter.CutterPlugin):
     author = "TODO"
 
     def setupPlugin(self):
+        print ("[2] inside setupPlugin")
         global _kernel
         _kernel = kernel.IPythonKernel()
         self.kernel = _kernel
@@ -31,16 +32,19 @@ class InitializeIPyCutter(cutter.CutterPlugin):
             self.kernel.start()
 
     def setupInterface(self, main):
+        print ("[9] inside setupInterface")
+
         if self.widget is None:
-            self.widget = cutter_qtconsole.IPythonConsole(self.kernel.connection_file)
+            action = QAction("IPyCutter", main)
+            action.setCheckable(True)
+
+            self.widget = cutter_qtconsole.IPythonConsole(self.kernel.connection_file, main, action)
+            main.addPluginDockWidget(self.widget, action)
             self.widget.create()
             
             _kernel.start()
 
         
-        action = QAction("IPyCutter", main)
-        action.setCheckable(True)
-        main.addPluginDockWidget(widget, action)
 
 
     def terminate(self):
@@ -51,6 +55,7 @@ class InitializeIPyCutter(cutter.CutterPlugin):
             self.kernel.stop()
 
 def ipycutterplugin():
+    print ("[1] inside ipycutterplugin")
     return InitializeIPyCutter()
 
 

@@ -36,7 +36,7 @@ from qtconsole.client import QtKernelClient
 from jupyter_client import find_connection_file
 import ipycutter.kernel
 
-class IdaRichJupyterWidget(RichJupyterWidget):
+class CutterRichJupyterWidget(RichJupyterWidget):
     def _is_complete(self, source, interactive):
         # The original implementation in qtconsole is synchronous. IDA Python is
         # single threaded and the IPython kernel runs on the same thread as the
@@ -47,7 +47,8 @@ class IdaRichJupyterWidget(RichJupyterWidget):
         # Our solution here was to copy the original _is_complete and call the
         # kernel's do_one_iteration before expecting a reply. Original implemetation is in:
         # https://github.com/jupyter/qtconsole/blob/4.3.1/qtconsole/frontend_widget.py#L260
-        print ("fsafsafsafsafsafas\nfafs")
+        print ("\n======= " + "2"*15)
+
         try:
             from queue import Empty
         except ImportError:
@@ -95,12 +96,13 @@ def set_widget_options(options):
 class IPythonConsole(cutter.CutterDockWidget):
     
     def __init__(self, connection_file, *args):
+        print ("[10] inside IPythonConsole init")
         super(IPythonConsole, self).__init__(*args)
         self.connection_file = connection_file
     
-    def create(self, form):
+    def create(self):
+        print ("[11] inside IPythonConsole create")
         try:
-            self.parent = self.FormToPyQtWidget(form, ctx=sys.modules[__name__])
             layout = self._createConsoleWidget()
             self.parent.setLayout(layout)
         except:
@@ -108,6 +110,7 @@ class IPythonConsole(cutter.CutterDockWidget):
             print(traceback.format_exc())
 
     def _createConsoleWidget(self):
+        print ("[12] inside IPythonConsole _createConsoleWidget")
         layout = QtWidgets.QVBoxLayout()
 
         connection_file = find_connection_file(self.connection_file)
@@ -126,8 +129,11 @@ class IPythonConsole(cutter.CutterDockWidget):
             # See: https://github.com/eset/ipyida/issues/8
             widget_options["gui_completion"] = 'droplist'
         widget_options.update(_user_widget_options)
-        self.ipython_widget = IdaRichJupyterWidget(self.parent, **widget_options)
-        print ("XXXXXXXXXXXXXXXX\nYYYYYYYYYYYYYYYYYYYYYYY")
+        print ("[13] inside IPythonConsole before creating CutterRichJupyterWidget")
+        self.ipython_widget = CutterRichJupyterWidget(self.parent, **widget_options)
+        print ("[15] inside IPythonConsole after creating CutterRichJupyterWidget")
+
+
         self.ipython_widget.kernel_manager = self.kernel_manager
         self.ipython_widget.kernel_client = self.kernel_client
         layout.addWidget(self.ipython_widget)

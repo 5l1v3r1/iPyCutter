@@ -21,8 +21,8 @@ import os
 # The IPython kernel will override sys.std{out,err}. We keep a copy to let the
 # existing embeded IDA console continue working, and also let IPython output to
 # it.
-_ida_stdout = sys.stdout
-_ida_stderr = sys.stderr
+_cutter_stdout = sys.stdout
+_cutter_stderr = sys.stderr
 
 # Path to a file to load into the kernel's namespace during its creation.
 # Similar to the idapythonrc.py file.
@@ -38,14 +38,14 @@ if sys.__stdout__ is None or sys.__stdout__.fileno() < 0:
 # in the console window. Used by wrap_excepthook.
 _ida_excepthook = sys.excepthook
 
-class IDATeeOutStream(ipykernel.iostream.OutStream):
+class CutterTeeOutStream(ipykernel.iostream.OutStream):
 
     def write(self, string):
-        "Write on both the previously saved IDA std output and zmq's stream"
-        if self.name == "stdout" and _ida_stdout:
-            _ida_stdout.write(string)
-        elif self.name == "stderr" and _ida_stderr:
-            _ida_stderr.write(string)
+        "Write on both the previously saved Cutter std output and zmq's stream"
+        if self.name == "stdout" and _cutter_stdout:
+            _cutter_stdout.write(string)
+        elif self.name == "stderr" and _cutter_stderr:
+            _cutter_stderr.write(string)
         super(self.__class__, self).write(string)
 
 def wrap_excepthook(ipython_excepthook):
@@ -60,25 +60,30 @@ def wrap_excepthook(ipython_excepthook):
 
 class IPythonKernel(object):
     def __init__(self):
+        print ("[3] inside IPythonKernel init")
         self._ida_ipython_qtimer = None
         self.connection_file = None
     
     def start(self):
-        print ("fasfsafasfsa\nsafsafsafsfsfs")
+        print ("[4] inside IPythonKernel start")
+
         if self._ida_ipython_qtimer is not None:
             raise Exception("IPython kernel is already running.")
 
         # The IPKernelApp initialization is based on the IPython source for
         # IPython.embed_kernel available here:
         # https://github.com/ipython/ipython/blob/rel-3.2.1/IPython/kernel/zmq/embed.py
-
         if IPKernelApp.initialized():
+            print ("[5] inside IPythonKernel check IPKernelApp.initialized")
             app = IPKernelApp.instance()
+        else:
+            print ("[6] inside IPythonKernel IPKernelApp not initialized")
 
             app = IPKernelApp.instance(
-                outstream_class='ipycutter.kernel.IDATeeOutStream'
+                outstream_class='ipycutter.kernel.CutterTeeOutStream'
             )
             app.initialize()
+            print ("[7] inside IPythonKernel IPKernelApp after initialize")
 
             main = app.kernel.shell._orig_sys_modules_main_mod
             if main is not None:
@@ -90,6 +95,7 @@ class IPythonKernel(object):
             # ipython's and IDA's excepthook (IDA's excepthook is actually Python's
             # default).
             sys.excepthook = wrap_excepthook(sys.excepthook)
+        print ("[8] inside IPythonKernel IPKernelApp after if-else for initializing")
 
         app.shell.set_completer_frame()
 
@@ -120,14 +126,15 @@ class IPythonKernel(object):
             self._ida_ipython_qtimer.stop()
         self._ida_ipython_qtimer = None
         self.connection_file = None
-        sys.stdout = _ida_stdout
-        sys.stderr = _ida_stderr
+        sys.stdout = _cutter_stdout
+        sys.stderr = _cutter_stderr
 
     @property
     def started(self):
         return self._ida_ipython_qtimer is not None
 
 def do_one_iteration():
+    print ("\n=====" +"D"*15)
     """Perform an iteration on IPython kernel runloop"""
     if IPKernelApp.initialized():
         app = IPKernelApp.instance()
