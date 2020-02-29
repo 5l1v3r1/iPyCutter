@@ -132,6 +132,12 @@ class IPythonConsole(cutter.CutterDockWidget):
             widget_options["gui_completion"] = 'droplist'
         widget_options.update(_user_widget_options)
         print ("[13] inside IPythonConsole before creating CutterRichJupyterWidget")
+
+        class fake_font():
+            def pointSize(self):
+                return 16
+        QtWidgets.QApplication.instance().font = fake_font
+
         self.ipython_widget = CutterRichJupyterWidget(self.parent, **widget_options)
         print ("[15] inside IPythonConsole after creating CutterRichJupyterWidget")
 
