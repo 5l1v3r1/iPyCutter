@@ -23,9 +23,7 @@ class InitializeIPyCutter(cutter.CutterPlugin):
 
     def setupPlugin(self):
         print ("[2] inside setupPlugin")
-        global _kernel
-        _kernel = kernel.IPythonKernel()
-        self.kernel = _kernel
+        self.kernel = kernel.IPythonKernel()
         self.widget = None
         
         if not self.kernel.started:
@@ -41,9 +39,7 @@ class InitializeIPyCutter(cutter.CutterPlugin):
             self.widget = cutter_qtconsole.IPythonConsole(self.kernel.connection_file, main, action)
             main.addPluginDockWidget(self.widget, action)
             self.widget.create()
-            
-            _kernel.start()
-
+    
         
 
 
