@@ -106,7 +106,7 @@ class IPythonConsole(cutter.CutterDockWidget):
         print ("[11] inside IPythonConsole create")
         try:
             layout = self._createConsoleWidget()
-            self.parent.setLayout(layout)
+            self.parent().setLayout(layout)
         except:
             import traceback
             print(traceback.format_exc())
